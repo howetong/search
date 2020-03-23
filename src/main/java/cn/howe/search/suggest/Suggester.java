@@ -1,5 +1,6 @@
 package cn.howe.search.suggest;
 
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.DoublePoint;
 import org.apache.lucene.document.Field;
@@ -10,6 +11,7 @@ import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.search.*;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
+import org.wltea.analyzer.lucene.IKAnalyzer;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -26,7 +28,9 @@ public class Suggester {
 
 
         // 写索引配置
-        IndexWriterConfig config = this.config.createIndexWriteConfig();
+        //IndexWriterConfig config = this.config.createIndexWriteConfig();
+        IndexWriterConfig config = new IndexWriterConfig(new IKAnalyzer());
+        config.setOpenMode(IndexWriterConfig.OpenMode.CREATE); // 创建索引的方式，每次都新建
         // IndexWriter是lucene的核心类，用于存储索引
         IndexWriter indexWriter = new IndexWriter(directory, config);
         // 写入索引
@@ -72,6 +76,7 @@ public class Suggester {
             System.out.println("id: " + document.get("id"));
             System.out.println("name: " + document.get("name"));
             System.out.println("Score: " + scoreDoc.score);
+            System.out.println("***********************");
         }
     }
 }
